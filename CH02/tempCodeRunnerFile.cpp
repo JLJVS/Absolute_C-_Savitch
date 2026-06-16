@@ -1,1 +1,1 @@
-grades[i]/5
+Fb > Fz
