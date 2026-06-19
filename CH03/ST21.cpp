@@ -1,0 +1,4 @@
+/*
+If you have the same variable in both functions it will work correctly since they have different scopes.
+
+*/

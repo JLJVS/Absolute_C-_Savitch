@@ -1,0 +1,4 @@
+/*
+parameters for functions are defined in the main function
+variables inside the function body are defined in the function body
+*/

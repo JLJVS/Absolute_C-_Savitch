@@ -1,0 +1,3 @@
+/*
+To illustrate what the function does and what it needs to work. Preferably they also have an example for the use.
+*/
