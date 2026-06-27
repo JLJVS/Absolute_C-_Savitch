@@ -8,102 +8,94 @@ bool check_for_hit(float hitrate){
     return hitrate*1000 >= num;
 }
 
-bool highest_first(){
-    float a_hr {0.33}, b_hr{0.5}, c_hr {1};
-    bool a_alive {true}, b_alive {true}, c_alive {true};
-    while (a_alive){
-        // first let a shoot
-        if (c_alive){
-            if (check_for_hit(a_hr)){
-                c_alive = false;
-            }
-        } else if (b_alive){
-            if (check_for_hit(a_hr)){
-                b_alive = false;
-            }
-        } else {
-            return true;
+bool highest_first() {
+    float a_hr = 0.33, b_hr = 0.5, c_hr = 1.0;
+    bool a_alive = true, b_alive = true, c_alive = true;
+
+    while (a_alive && (b_alive || c_alive)) {
+
+        // A shoots
+        if (c_alive) {
+            if (check_for_hit(a_hr)) c_alive = false;
+        } else if (b_alive) {
+            if (check_for_hit(a_hr)) b_alive = false;
         }
 
-        // let b shoot if alive
-        if (c_alive){
-            if (check_for_hit(b_hr)){
-                c_alive = false;
-            }         
-        } else if (a_alive){
-            if (check_for_hit(b_hr)){
-                return  false;
-            }    
-        } else {
-            return false;
+        // B shoots
+        if (b_alive) {
+            if (c_alive) {
+                if (check_for_hit(b_hr)) c_alive = false;
+            } else if (a_alive) {
+                if (check_for_hit(b_hr)) a_alive = false;
+            }
         }
 
-        // let c shoot if alive
-        if (b_alive){
-            if (check_for_hit(c_hr)){
-                b_alive = false;
-            }         
-        } else if (a_alive){
-            if (check_for_hit(c_hr)){
-                return false;
-            }    
-        } else {
-            return false;
+        if (!a_alive) return false;
+
+        // C shoots
+        if (c_alive) {
+            if (b_alive) {
+                if (check_for_hit(c_hr)) b_alive = false;
+            } else if (a_alive) {
+                if (check_for_hit(c_hr)) a_alive = false;
+            }
         }
-    return false;
+
+        if (!a_alive) return false;
     }
+
+    return a_alive;
 }
     
 
 
-bool miss_first(){
-    float a_hr {0.33}, b_hr{0.5}, c_hr {1}, n {};
-    bool a_alive {true}, b_alive {true}, c_alive {true};
-    while (a_alive){
-        // first let a shoot
-        if (n==0){
-            n++;
-        } else if (c_alive){
-            if (check_for_hit(a_hr)){
-                c_alive = false;
-            }
-        } else if (b_alive){
-            if (check_for_hit(a_hr)){
-                b_alive = false;
-            } else {
-                return true;
-            }
-        }
+bool miss_first() {
+    float a_hr = 0.33, b_hr = 0.5, c_hr = 1.0;
+    bool a_alive = true, b_alive = true, c_alive = true;
 
-        // let b shoot if alive
-        if (c_alive){
-            if (check_for_hit(b_hr)){
-                c_alive = false;
-            }         
-        } else if (a_alive){
-            if (check_for_hit(b_hr)){
-                return false;
-            }    
+    bool a_has_missed_first = false;
+
+    while (a_alive && (b_alive || c_alive)) {
+
+        //  A SHOOTS
+        if (!a_has_missed_first) {
+            // A intentionally misses the first shot
+            a_has_missed_first = true;
         } else {
-            return false;
+            // After that, A shoots normally
+            if (c_alive) {
+                if (check_for_hit(a_hr)) c_alive = false;
+            } else if (b_alive) {
+                if (check_for_hit(a_hr)) b_alive = false;
+            }
         }
 
-        // let c shoot if alive
-        if (b_alive){
-            if (check_for_hit(c_hr)){
-                b_alive = false;
-            }         
-        } else if (a_alive){
-            if (check_for_hit(c_hr)){
-                return false;
-            }    
-        } else {
-            return false;
+        // --- B SHOOTS ---
+        if (b_alive) {
+            if (c_alive) {
+                if (check_for_hit(b_hr)) c_alive = false;
+            } else if (a_alive) {
+                if (check_for_hit(b_hr)) a_alive = false;
+            }
         }
 
+        if (!a_alive) return false;
+
+        // --- C SHOOTS ---
+        if (c_alive) {
+            if (b_alive) {
+                if (check_for_hit(c_hr)) b_alive = false;
+            } else if (a_alive) {
+                if (check_for_hit(c_hr)) a_alive = false;
+            }
+        }
+
+        if (!a_alive) return false;
     }
-    return false;
+
+    return a_alive;
 }
+
 
 
 
