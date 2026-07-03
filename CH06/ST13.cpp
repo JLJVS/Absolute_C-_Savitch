@@ -1,0 +1,5 @@
+/*
+by making all member variables public it would allow direct access from outside the class to the members
+so they would be able to be changed directly from outside
+
+*/
