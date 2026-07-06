@@ -1,0 +1,6 @@
+/*
+
+capacity is the amount of memory reserved for the vector
+size is the amount of memory used for the vector
+
+*/
