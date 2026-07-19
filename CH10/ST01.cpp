@@ -1,0 +1,6 @@
+/*
+
+The difference between a int and char pointer is the size of the memory blocks. 
+Int pointers increment by two and char pointers increment by one.
+
+*/

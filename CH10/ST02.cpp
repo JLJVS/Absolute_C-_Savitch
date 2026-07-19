@@ -1,0 +1,7 @@
+
+
+/* 
+
+double *DoublePointer {};
+
+*/
