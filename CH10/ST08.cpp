@@ -1,0 +1,5 @@
+/*
+
+delete operator. Deletes deallocates the memory address where the pointer is pointing at.
+
+*/
