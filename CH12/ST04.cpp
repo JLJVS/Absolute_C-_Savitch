@@ -1,0 +1,5 @@
+/*
+
+replace the outfile stream with cout
+
+*/
