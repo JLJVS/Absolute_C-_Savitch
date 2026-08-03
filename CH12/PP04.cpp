@@ -1,10 +1,44 @@
 #include <iostream>
 #include <fstream>
-using namespace std;
+#include <cmath>
+using std::cout, std::endl, std::ifstream ;
 
 
 int main()
 {
+    
+    double next;
+    int count {};
+    double total {};
+    // first pass to get average
+    ifstream inputFile("data.txt");
+    while(inputFile>>next){
+        cout << next << endl;
+        count++;
+        total += next;
+    }
+
+    if (count == 0){
+        cout << "No numbers found exiting now" << endl;
+        return 0;
+    }
+
+    inputFile.close();
+
+    // second pass to get standard deviation
+    double avg {total/count};
+    double sd {};
+        
+    inputFile.open("data.txt");
+    while(inputFile>>next){
+        sd += pow((next-avg),2);
+    }
+    sd /= count;
+    sd = sqrt(sd);
+    inputFile.close();
+        
+    cout << "Average: " << avg <<endl;
+    cout << "Standard Deviation: " << sd << endl;
 
 
     return 0;
