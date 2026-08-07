@@ -1,2 +1,2 @@
 
-        if (find_match(words, reversed)){
+    std::sort(std::begin(high_scores), std::end(high_scores), by_score_desc);
