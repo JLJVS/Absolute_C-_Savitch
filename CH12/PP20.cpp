@@ -19,10 +19,11 @@ class HighScoreTable{
         ~HighScoreTable();
         void print_high_scores(ostream& out = cout) const;
         void update_high_scores( const Score& new_score);
-        void save() const;
         
     private:
         void load();
+        void save() const;
+        
         
         static constexpr int max_entries{5};
         Score high_scores[max_entries];
