@@ -1,10 +1,19 @@
 #include <iostream>
 #include <fstream>
+#include <vector>
 #include <string>
+#include <algorithm>
+ 
+using std::cout, std::cerr, std::cin, std::ifstream;
+using std::string, std::vector;
 
-using std::cout, std::endl;
+string canonical(const string& word)
+{
+    string key{word};
+    std::sort(key.begin(), key.end());
+    return key;
 
-int main()
+}
 {
     return 0;
 }
