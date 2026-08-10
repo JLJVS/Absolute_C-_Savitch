@@ -7,6 +7,12 @@
 using std::cout, std::cerr, std::cin, std::ifstream;
 using std::string, std::vector;
 
+struct Entry {
+    string word;
+    string key;
+};
+
+
 string canonical(const string& word)
 {
     string key{word};
