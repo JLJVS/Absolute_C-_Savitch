@@ -1,0 +1,3 @@
+/*
+A stack overflow error means there have been more activation frames placed on the stack than allowed.
+*/
