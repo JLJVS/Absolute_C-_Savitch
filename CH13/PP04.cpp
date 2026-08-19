@@ -26,7 +26,18 @@ void reverse_string(char s[]){
     reverse_range(s, 0, last);
 }
 
-void reverse_string_iter()
+void reverse_range_iter(char s[], int first, int last){
+    for (; first < last; ++first, --last){
+        char temp = s[last];
+        s[last] = s[first];
+        s[first] = temp;
+    }
+}
+
+void reverse_string_iter(char s[]){
+    int last = static_cast<int>(std::strlen(s)) -1;
+    reverse_range_iter(s, 0, last);
+}
 
 using ReverseFn = void (*)(char[], int, int);
 static int failures = 0;
