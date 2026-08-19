@@ -1,91 +1,100 @@
 #include <iostream>
-#include <vector>
 #include <string>
+#include <cstring>
 #include <iomanip>
 using std::cout, std::endl;
 using std::string;
-using std::vector;
 using std::setw;
 
-struct Move { int disk; char from, to; };
-
-void hanoi_record(int n, char from, char to, char spare, vector<Move>& out)
+void reverse_range(char a[], int first, int last)
 {
-    if (n <= 0) return;
-    hanoi_record(n - 1, from, spare, to, out);
-    out.push_back({n, from, to});
-    hanoi_record(n - 1, spare, to, from, out);
-}
-
-
-void hanoi(int n, char from, char to, char spare)
-{
-    if (n <= 0) return;
-
-    hanoi(n - 1, from, spare, to);                      // clear the small ones off
-    cout << "  disk " << n << ":  " << from << " -> " << to << "\n";
-    hanoi(n - 1, spare, to, from);                      // put them back on top
-}
-
-// Same recursion, counting instead of printing.
-long long hanoi_moves(int n)
-{
-    if (n <= 0) return 0;
-    return hanoi_moves(n - 1) + 1 + hanoi_moves(n - 1);
-}
-
-string validate(int n, const vector<Move>& moves)
-{
-    vector<int> post[3];                                 // 0='A', 1='B', 2='C'
-    for (int d {n}; d >= 1; --d) post[0].push_back(d);    // largest at the bottom
-
-    for (size_t k {0}; k < moves.size(); ++k){
-        const Move& m {moves[k]};
-        const int f {m.from - 'A'}, t {m.to - 'A'};
-        const string where {" at move " + std::to_string(k + 1)};
-
-        if (f < 0 || f > 2 || t < 0 || t > 2)   return "bad post letter" + where;
-        if (f == t)                             return "source == destination" + where;
-        if (post[f].empty())                    return "source post empty" + where;
-        if (post[f].back() != m.disk)           return "disk not on top of source" + where;
-        if (!post[t].empty() && post[t].back() < m.disk)
-            return "larger disk placed on smaller" + where;
-
-        post[f].pop_back();
-        post[t].push_back(m.disk);
+    if (last <= first)
+    {
+        return;
+    } else 
+    {
+        char temp = a[first];
+        a[first] = a[last];
+        a[last] = temp;
+        return reverse_range(a, first+1, last-1);
     }
+    
+}
 
-    if (!post[0].empty() || !post[2].empty())  return "disks left behind";
-    if (static_cast<int>(post[1].size()) != n) return "wrong number on destination";
-    for (int i {0}; i < n; ++i) if (post[1][i] != n - i) return "destination out of order";
-    return "";
+void reverse_string(char s[]){
+    int last = static_cast<int>(std::strlen(s)) -1;
+    reverse_range(s, 0, last);
+}
+
+static int failures = 0;
+
+void check_range(const char* input, int first, int last, const char* want)
+{
+    char buf[64];
+    std::strcpy(buf, input);
+    reverse_range(buf, first, last);
+    const bool ok = (std::strcmp(buf, want) == 0);
+    if (!ok) ++failures;
+    cout << (ok ? "  ok   " : "  FAIL ")
+         << "\"" << input << "\" (" << first << "," << last << ") -> \""
+         << buf << "\"   want \"" << want << "\"\n";
+}
+
+void check_string(const char* input, const char* want)
+{
+    char buf[64];
+    std::strcpy(buf, input);
+    reverse_string(buf);
+    const bool ok = (std::strcmp(buf, want) == 0);
+    if (!ok) ++failures;
+    cout << (ok ? "  ok   " : "  FAIL ")
+         << "reverse_string(\"" << input << "\") -> \"" << buf
+         << "\"   want \"" << want << "\"   (len still " << std::strlen(buf) << ")\n";
 }
 
 int main()
 {
-    int failures {0};
+    cout << "--- Savitch's example: 1-based, index 0 is a spare ---\n";
+    check_range("?ABCDE", 2, 5, "?AEDCB");
 
-    cout << "--- n = 3, the moves ---\n";
-    hanoi(3, 'A', 'B', 'C');
+    cout << "\n--- ranges ---\n";
+    struct Case { const char* in; int first, last; const char* want; };
+    const Case cases[] {
+        {"ABCDEF", 0, 5, "FEDCBA"},   // whole, even length
+        {"ABCDE",  0, 4, "EDCBA"},    // whole, odd length
+        {"ABCDE",  1, 3, "ADCBE"},    // interior
+        {"ABCDE",  1, 2, "ACBDE"},    // adjacent pair
+        {"ABCDE",  2, 2, "ABCDE"},    // single element, no change
+        {"ABCDE",  3, 2, "ABCDE"},    // empty range, no change
+        {"A",      0, 0, "A"},        // one-character array
+    };
+    for (const Case& c : cases) check_range(c.in, c.first, c.last, c.want);
 
-    cout << "\n--- every sequence is legal and finishes correctly ---\n";
-    for (int n {0}; n <= 14; ++n){
-        vector<Move> moves;
-        hanoi_record(n, 'A', 'B', 'C', moves);
-        const string err {validate(n, moves)};
-        const bool ok {err.empty() && static_cast<long long>(moves.size()) == (1LL << n) - 1};
-        if (!ok){ ++failures;
-            cout << "  FAIL n=" << n << ": " << (err.empty() ? "wrong move count" : err) << "\n"; }
+    cout << "\n--- reversing twice returns the original (500 random cases) ---\n";
+    unsigned seed = 12345;
+    auto rnd = [&seed](int n){ seed = seed * 1103515245u + 12345u; return (seed >> 16) % n; };
+    int bad = 0;
+    for (int t = 0; t < 500; ++t){
+        char x[21], original[21];
+        int n = 1 + static_cast<int>(rnd(20));
+        for (int i = 0; i < n; ++i) x[i] = static_cast<char>('a' + rnd(26));
+        x[n] = '\0';
+        std::strcpy(original, x);
+        int f = static_cast<int>(rnd(n)), l = static_cast<int>(rnd(n));
+        reverse_range(x, f, l);
+        reverse_range(x, f, l);
+        if (std::strcmp(x, original) != 0) ++bad;
     }
-    if (!failures) cout << "  n = 0..14 all valid, all of length 2^n - 1\n";
+    cout << (bad ? "  FAILURES\n" : "  all 500 round-trip correctly\n");
+    failures += bad;
 
-    cout << "\n--- move counts ---\n";
-    cout << "   n         moves        2^n - 1\n";
-    for (int n : {1, 2, 3, 5, 10, 20, 25}){
-        const long long got {hanoi_moves(n)}, want {(1LL << n) - 1};
-        if (got != want) ++failures;
-        cout << setw(4) << n << setw(14) << got << setw(15) << want << "\n";
-    }
+    cout << "\n--- reverse_string ---\n";
+    check_string("hello", "olleh");
+    check_string("ab",    "ba");
+    check_string("a",     "a");
+    check_string("",      "");             // strlen-1 == -1, base case must cope
+    check_string("racecar", "racecar");    // palindrome, unchanged
+    check_string("hello world", "dlrow olleh");
 
     cout << (failures ? "\nSOME CHECKS FAILED\n" : "\nall checks passed\n");
     return failures;
