@@ -1,0 +1,5 @@
+/*
+
+Yes an object of a derived class is also an object of the base class.
+
+*/
