@@ -34,15 +34,14 @@ using std::cout, std::endl, std::string;
 
 class Creature
 {
-    private:
+    protected:
         int type;            // 0 human, 1 cyberdemon, 2 balrog, 3 elf
         int strength;        // How much damage we can inflict
-        int hitpoints;       // How much damage we can sustain
+        int hitpoints; 
+        string species;     
         string getSpecies(); // Returns type of species
     public:
         Creature();
-        // Initialize to human, 10 strength, 10 hit points
-
         Creature(int newType, int newStrength, int newHit);
         // Initialize creature to new type, strength, hit points
 
@@ -59,91 +58,6 @@ class Creature
         // inflicts in one round of combat
 };
 
-// constructor bodies are not given in the book; these match the comments
-Creature::Creature() : type(0), strength(10), hitpoints(10) {}
-Creature::Creature(int newType, int newStrength, int newHit)
-    : type(newType), strength(newStrength), hitpoints(newHit) {}
-
-
-string Creature::getSpecies()
-{
-  switch (type)
-  {
-    case 0: return "Human";
-    case 1: return "Cyberdemon";
-    case 2: return "Balrog";
-    case 3: return "Elf";
-  }
-  return "Unknown";
-}
-
-
-int Creature::getDamage( )
-{
-  int damage;
-
-    // All creatures inflict damage, which is a
-    // random number up to their strength
-    damage = (rand( ) % strength) + 1;
-    cout << getSpecies( ) << " attacks for " <<
-            damage << " points!" << endl;
-
-    // Demons can inflict damage of 50 with a 5% chance
-    //
-    // *** BUG, AS PRINTED IN THE BOOK ***
-    // (type = 2) is an ASSIGNMENT, not a comparison. It sets type to 2 and
-    // evaluates to 2, which is true, so:
-    //   - the branch is always taken, whatever the creature is, and
-    //   - every creature permanently becomes a Balrog after one attack.
-    // The extra parentheses also suppress GCC's -Wparentheses warning, so the
-    // compiler says nothing. Should be (type == 2).
-    if ((type = 2) || (type == 1))
-       if ((rand( ) % 100) < 5)
-       {
-          damage = damage + 50;
-          cout << "Demonic attack inflicts 50 "
-              << " additional damage points!" << endl;
-       }
-
-    // Elves inflict double magical damage with a 10% chance
-    if (type == 3)
-    {
-       if ((rand( ) % 10)==0)
-       {
-          cout << "Magical attack inflicts " << damage <<
-                  " additional damage points!" << endl;
-          damage = damage * 2;
-       }
-    }
-
-    // Balrogs are so fast they get to attack twice
-    if (type == 2)
-    {
-        int damage2 = (rand() % strength) + 1;
-        cout << "Balrog speed attack inflicts " << damage2 <<
-                 " additional damage points!" << endl;
-        damage = damage + damage2;
-    }
-    return damage;
-}
-
-
-int main()
-{
-    srand(42);                       // fixed seed so runs are reproducible
-
-    Creature human     (0, 10, 10);
-    Creature cyberdemon(1, 20, 40);
-    Creature balrog    (2, 25, 50);
-    Creature elf       (3, 12, 15);
-
-    Creature* all[] { &human, &cyberdemon, &balrog, &elf };
-
-    for (Creature* c : all){
-        cout << "\n=== creature starts as type " << c->getType() << " ===\n";
-        for (int round = 0; round < 3; ++round)
-            cout << "  round " << round + 1 << " total damage: " << c->getDamage()
-                 << "   (type is now " << c->getType() << ")\n";
-    }
-    return 0;
+Creature::Creature(){
+    
 }
