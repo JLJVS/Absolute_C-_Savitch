@@ -35,21 +35,21 @@ using std::cout, std::endl, std::string;
 class Creature
 {
     protected:
-        int type;            // 0 human, 1 cyberdemon, 2 balrog, 3 elf
-        int strength;        // How much damage we can inflict
-        int hitpoints; 
-        string species;     
-        string getSpecies(); // Returns type of species
+        int strength {10};        // How much damage we can inflict
+        int hitpoints {10}; 
+        string species {"Creature"};     
+        
     public:
-        Creature();
-        Creature(int newType, int newStrength, int newHit);
+        Creature() = default; 
+        // Initalizes default to 10 hp, 10 strength and species= "Creature"
+        Creature(int newStrength, int newHit, string newSpecies);
         // Initialize creature to new type, strength, hit points
 
         // accessors / mutators (not given in the book)
-        int  getType() const      { return type; }
         int  getStrength() const  { return strength; }
         int  getHitpoints() const { return hitpoints; }
-        void setType(int t)       { type = t; }
+        string  getSpecies() const {return species;}
+
         void setStrength(int s)   { strength = s; }
         void setHitpoints(int h)  { hitpoints = h; }
 
@@ -58,6 +58,21 @@ class Creature
         // inflicts in one round of combat
 };
 
-Creature::Creature(){
-    
+Creature::Creature(int newStrength, int newHit, string newSpecies) : strength{newStrength}, hitpoints{newHit}, species{newSpecies}{}
+
+int Creature::getDamage(){
+    int dmg = (rand()%strength+1);
+    cout << species << " attacks for " << dmg << " points!" << endl;
+    return dmg;
 }
+
+class Human : public Creature
+{
+    public:
+        Human();
+        // defaults to species human, 10 str, 10 hp
+        Human(int newStrength, int newHit);
+};
+
+Human::Human() : Creature{10, 10, "Human"} {}
+Human::Human(int newStrength, int newHit) : Creature{newStrength, newHit, "Human"} {}
