@@ -1,0 +1,5 @@
+/*
+
+If the base class function has the virtual modifier it will call the derived class function otherwise it will be the base class modifier.
+
+*/
