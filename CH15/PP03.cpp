@@ -6,6 +6,13 @@
 using std::cout, std::endl, std::string;
 using std::setw;
 
+struct Position
+{
+    int row {0};
+    int col {0};
+};
+
+
 class Organism{
     public:
         Organism() = default;
@@ -13,9 +20,13 @@ class Organism{
         virtual void move() = 0;
         virtual ~Organism() = default;
         virtual char symbol() const = 0;
+
+        bool hasMoved() const { return moved;}
+        void setMoved(bool m) {moved  = m;}
     protected:
-        int x {0};
-        int y {0};
+        bool moved {false};
+        int stepsSurvied {0};
+        
 
 };
 
@@ -25,6 +36,8 @@ class Ant : public Organism{
         void move() override {};
         char symbol() const override {return 'O';}
 };
+
+
 
 class Doodlebug: public Organism{
     public:
@@ -39,8 +52,13 @@ class World
     public:
         explicit World(int nDoodleBugs=5, int nAnts = 100);
         ~World();
+        void draw() const;
+        bool inBounds(int r, int c) const;
+        bool isEmpty(int r, int c) const;
+        Organism* at(int r, int c) const;
+        void moveTo(Organism* who, int r, int c);
         
-    protected:
+    private:
         Organism* grid[SIZE][SIZE] {};
         void populate(int nDoodleBugs, int nAnts);
 
@@ -75,6 +93,19 @@ void World::populate(int nDoodleBugs, int nAnts){
             grid[x][y] = new Ant(x, y);
             nAnts--;
         }
+    }
+}
+
+void World::draw() const{
+    for (int r{}; r < SIZE; ++r){
+        for (int c{}; c < SIZE; ++c){
+            if (grid[r][c]){
+                cout << grid[r][c]->symbol();
+            } else {
+                cout << '_';
+            }
+        }
+        cout << "\n";
     }
 }
 
