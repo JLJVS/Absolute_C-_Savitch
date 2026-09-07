@@ -16,7 +16,6 @@ struct Position
 class Organism{
     public:
         Organism() = default;
-        Organism(int startX, int startY) : x{startX}, y{startY}{}
         virtual void move() = 0;
         virtual ~Organism() = default;
         virtual char symbol() const = 0;
@@ -32,7 +31,7 @@ class Organism{
 
 class Ant : public Organism{
     public:
-        Ant(int startX, int startY) : Organism{startX, startY} {}
+        Ant() : Organism() {}
         void move() override {};
         char symbol() const override {return 'O';}
 };
@@ -41,7 +40,7 @@ class Ant : public Organism{
 
 class Doodlebug: public Organism{
     public:
-        Doodlebug(int startX, int startY) : Organism{startX, startY} {}
+        Doodlebug() : Organism() {}
         void move() override {};
         char symbol() const override {return 'X';}
 };
@@ -82,7 +81,7 @@ void World::populate(int nDoodleBugs, int nAnts){
         x = rand()%SIZE;
         y = rand()%SIZE;
         if (!grid[x][y]){
-            grid[x][y] = new Doodlebug(x, y);
+            grid[x][y] = new Doodlebug();
             nDoodleBugs--;
         }
     }
@@ -90,7 +89,7 @@ void World::populate(int nDoodleBugs, int nAnts){
         x = rand()%SIZE;
         y = rand()%SIZE;
         if (!grid[x][y]){
-            grid[x][y] = new Ant(x, y);
+            grid[x][y] = new Ant();
             nAnts--;
         }
     }
