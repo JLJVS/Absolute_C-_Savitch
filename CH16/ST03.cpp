@@ -1,0 +1,6 @@
+/*
+
+Templates provide a way to allow functions and classes to use parameters that have parameters for type names
+
+
+*/
