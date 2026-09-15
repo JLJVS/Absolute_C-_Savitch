@@ -1,0 +1,5 @@
+/*
+
+Insertion and deletion is easier but we need to keep track of previous and connect it each time.
+
+*/
